@@ -29,6 +29,10 @@ export function ContactUsContent() {
               <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>15 June 2025</strong></td>
               <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Added standard deduction extra for ages 65+</td>
             </tr>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>26 November 2025</strong></td>
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Updated tax brackets for 2026, updated ACA subsidy percentages</td>
+            </tr>
             {/* You can add more rows here for future versions */}
           </tbody>
         </table>
