@@ -106,48 +106,51 @@ const months = [
   
   export const formSchema = z.object({
     about: z.object({
-      age: z.coerce.number(),
-      birth_month: z.string(),
-      end_of_plan_age: z.coerce.number(),
+      age: z.coerce.number().min(18, { message: "Age must be at least 18" }).max(120, { message: "Age must be at most 120" }),
+      birth_month: z.string().refine((val) => {
+        const num = parseInt(val);
+        return !isNaN(num) && num >= 1 && num <= 12;
+      }, { message: "Month must be between 1 and 12" }),
+      end_of_plan_age: z.coerce.number().min(18, { message: "Age must be at least 18" }).max(120, { message: "Age must be at most 120" }),
       filing_status: z.enum(["Single", "MFJ"]),
-      state_of_residence: z.string(),
+      state_of_residence: z.string().min(2).max(2),
     }),
     social_security: z.object({
-      amount: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
-      starts: z.coerce.number(),
+      amount: z.coerce.number().min(0, { message: "Cannot be negative" }).max(20000, { message: "This should be a monthly amount." }),
+      starts: z.coerce.number().min(-1).max(70),
     }),
     predictions: z.object({
-      inflation: z.coerce.number(),
-      returns: z.coerce.number(),
+      inflation: z.coerce.number().min(0, { message: "Cannot be negative" }).max(20, { message: "Must be 20% or less" }),
+      returns: z.coerce.number().min(-20, { message: "Must be -20% or more" }).max(50, { message: "Must be 50% or less" }),
     }),
     cash: z.object({
-      amount: z.coerce.number(),
+      amount: z.coerce.number().min(0, { message: "Cannot be negative" }),
     }),
     brokerage: z.object({
-      balance: z.coerce.number(),
-      basis: z.coerce.number(),
-      distributions: z.coerce.number(),
+      balance: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      basis: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      distributions: z.coerce.number().min(0, { message: "Cannot be negative" }).max(100, { message: "Must be 100% or less" }),
     }),
     IRA: z.object({
-      balance: z.coerce.number(),
+      balance: z.coerce.number().min(0, { message: "Cannot be negative" }),
     }),
     Roth: z.object({
-      balance: z.coerce.number(),
-      old_conversions: z.coerce.number(),
-      conversion_year_minus_1: z.coerce.number(),
-      conversion_year_minus_2: z.coerce.number(),
-      conversion_year_minus_3: z.coerce.number(),
-      conversion_year_minus_4: z.coerce.number(),
+      balance: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      old_conversions: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      conversion_year_minus_1: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      conversion_year_minus_2: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      conversion_year_minus_3: z.coerce.number().min(0, { message: "Cannot be negative" }),
+      conversion_year_minus_4: z.coerce.number().min(0, { message: "Cannot be negative" }),
 
     }),
     ACA: z.object({
-      premium: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
-      slcsp: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
+      premium: z.coerce.number().min(0, { message: "Cannot be negative" }).max(50000, { message: "Amount too high" }),
+      slcsp: z.coerce.number().min(0, { message: "Cannot be negative" }).max(50000, { message: "Amount too high" }),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
     }).optional(),
     roth_conversion_preference: z.enum(["anytime", "before_socsec", "never"]),
     spending_preference: z.enum(["max_spend", "max_assets"]),
-    annual_spending: z.coerce.number().optional(),
+    annual_spending: z.coerce.number().min(0, { message: "Cannot be negative" }).optional(),
     pessimistic: z.object({
       taxes: z.boolean(),
       healthcare: z.boolean(),
@@ -155,7 +158,7 @@ const months = [
   }).refine((schema) => 
     (schema.social_security.starts >= schema.about.age) ||
     schema.social_security.starts === -1, { 
-    message: "Make a selection",
+    message: "Social Security start age cannot be before current age",
     path: ["social_security.starts"]
 });
 
