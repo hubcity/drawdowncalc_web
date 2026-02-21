@@ -158,7 +158,7 @@ const months = [
   }).refine((schema) => 
     (schema.social_security.starts >= schema.about.age) ||
     schema.social_security.starts === -1, { 
-    message: "Social Security start age cannot be before current age",
+    message: "Make a selection",
     path: ["social_security.starts"]
 });
 
