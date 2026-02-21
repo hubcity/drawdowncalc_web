@@ -1,0 +1,15 @@
+
+> nextn@0.1.0 dev /app
+> next dev --turbopack -p 9002
+
+   ▲ Next.js 15.5.12 (Turbopack)
+   - Local:        http://localhost:9002
+   - Network:      http://192.168.0.2:9002
+   - Environments: .env.development
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ○ Compiling / ...
+ ✓ Compiled / in 10.9s
+ GET / 200 in 13143ms
+ GET / 200 in 455ms
