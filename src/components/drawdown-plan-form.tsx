@@ -116,7 +116,7 @@ const months = [
       state_of_residence: z.string().min(2).max(2),
     }),
     social_security: z.object({
-      amount: z.coerce.number().min(0, { message: "Cannot be negative" }).max(20000, { message: "This should be a monthly amount." }),
+      amount: z.coerce.number().min(0, { message: "Cannot be negative" }).max(15000, { message: "This should be a monthly amount." }),
       starts: z.coerce.number().min(-1).max(70),
     }),
     predictions: z.object({
@@ -144,8 +144,8 @@ const months = [
 
     }),
     ACA: z.object({
-      premium: z.coerce.number().min(0, { message: "Cannot be negative" }).max(50000, { message: "Amount too high" }),
-      slcsp: z.coerce.number().min(0, { message: "Cannot be negative" }).max(50000, { message: "Amount too high" }),
+      premium: z.coerce.number().min(0, { message: "Cannot be negative" }).max(10000, { message: "This should be a monthly amount." }),
+      slcsp: z.coerce.number().min(0, { message: "Cannot be negative" }).max(10000, { message: "This should be a monthly amount." }),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
     }).optional(),
     roth_conversion_preference: z.enum(["anytime", "before_socsec", "never"]),
