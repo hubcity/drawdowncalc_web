@@ -184,7 +184,7 @@ const months = [
     const prevFilingStatusRef = useRef<string | undefined>(form.getValues("about.filing_status"));
 
     const { setFocus } = form;
-    const { isSubmitted } = useFormState({ control: form.control }); // Get isSubmitted state
+    const { isSubmitted, isSubmitting } = useFormState({ control: form.control }); // Get isSubmitted and isSubmitting state
 
     const numberInputOnWheelPreventChange = (e: React.WheelEvent<HTMLInputElement>) => {
       // if (!(e.target === document.activeElement)) {
@@ -1095,8 +1095,9 @@ const months = [
           )}
   
           <Button type="submit"
+                  loading={isSubmitting}
                   className={hasErrors ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"}
-          >Calculate Drawdown Plan</Button>
+          >{isSubmitting ? "Calculating..." : "Calculate Drawdown Plan"}</Button>
         </form>
       </Form>
     );
