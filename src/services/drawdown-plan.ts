@@ -1,3 +1,5 @@
+import { formSchema } from "@/lib/form-schema";
+
 /**
  * Represents the user's input data for generating a drawdown plan.
  */
@@ -278,6 +280,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_AP
  * @returns A promise that resolves to a DrawdownPlanResponse.
  */
 export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanResponse> {
+  // Validate the payload against the schema to ensure data integrity
+  const validatedPayload = formSchema.parse(payload);
+
   const calculateUrl = `${API_BASE_URL}/calculate`; // Construct the URL
 
   const response = await fetch(calculateUrl, { // Use the constructed URL
@@ -285,7 +290,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(validatedPayload),
   });
   // console.log(response);
   if (!response.ok) {
