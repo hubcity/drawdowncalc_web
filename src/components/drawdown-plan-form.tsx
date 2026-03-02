@@ -8,7 +8,7 @@ import {
   } from "@/services/drawdown-plan";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWatch, useFormState } from "react-hook-form";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
   
@@ -167,7 +167,7 @@ const months = [
     onFormEdit: () => void; // Add the new prop
   }
   
-  export function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
+  export const DrawdownPlanForm = React.memo(function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: defaultFormValues, // Use the imported defaults
@@ -255,16 +255,10 @@ const months = [
       }
     }, [filingStatus, form, onFormEdit, isSubmitted]);
     
-    // const handleInputChange = (fieldOnChange: (...event: any[]) => void) => (e: any) => {
-    //   fieldOnChange(e);
-    //   onFormEdit(); // Notify the parent component of the edit
-    // };
-
-    const handleInputChange = (fieldOnChange: (...event: any[]) => void) => (e: any) => {
+    const handleInputChange = useCallback((fieldOnChange: (...event: any[]) => void, e: any) => {
       fieldOnChange(e);
-      // setIsFormEdited(true); // This local state is not strictly needed if onFormEdit handles parent state
       onFormEdit(); // Notify the parent component of the edit
-    };
+    }, [onFormEdit]);
   
     return (
       <Form {...form}>
@@ -292,7 +286,7 @@ const months = [
                 </TooltipProvider>
                 </div>
                 <FormControl>
-                  <Input placeholder="Age" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
+                  <Input placeholder="Age" type="number" {...field} onChange={(e) => handleInputChange(field.onChange, e)} onWheel={numberInputOnWheelPreventChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -305,7 +299,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Month of Birth</FormLabel>
-                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
+                <Select onValueChange={(e) => handleInputChange(field.onChange, e)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select month of birth" />
@@ -338,7 +332,7 @@ const months = [
                     type="number"
                     {...field}
                     onWheel={numberInputOnWheelPreventChange}
-                    onChange={handleInputChange(field.onChange)}
+                    onChange={(e) => handleInputChange(field.onChange, e)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -352,7 +346,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tax Filing Status</FormLabel>
-                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
+                <Select onValueChange={(e) => handleInputChange(field.onChange, e)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a tax filing status" />
@@ -374,7 +368,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>State of Residence</FormLabel>
-                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
+                <Select onValueChange={(e) => handleInputChange(field.onChange, e)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a state" />
@@ -810,7 +804,7 @@ const months = [
       <FormItem>
         <FormLabel>Social Security Starts</FormLabel>
         <FormControl>
-          <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value.toString()}>
+          <Select onValueChange={(e) => handleInputChange(field.onChange, e)} defaultValue={field.value.toString()}>
               <SelectTrigger>
                 <SelectValue placeholder="Social Security Starts" />
               </SelectTrigger>
@@ -961,7 +955,7 @@ const months = [
                         type="number"
                         {...field}
                         onWheel={numberInputOnWheelPreventChange}
-                        onChange={handleInputChange(field.onChange)}
+                        onChange={(e) => handleInputChange(field.onChange, e)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -982,7 +976,7 @@ const months = [
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={handleInputChange(field.onChange)} />
+                        <Checkbox checked={field.value} onCheckedChange={(e) => handleInputChange(field.onChange, e)} />
                     </FormControl>
                     <FormLabel className="font-normal">Taxes</FormLabel>
                     </FormItem>
@@ -994,7 +988,7 @@ const months = [
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={handleInputChange(field.onChange)} />
+                        <Checkbox checked={field.value} onCheckedChange={(e) => handleInputChange(field.onChange, e)} />
                     </FormControl>
                     <FormLabel className="font-normal">Healthcare Costs</FormLabel>
                     </FormItem>
@@ -1011,7 +1005,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Roth Conversions</FormLabel>
-                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
+                <Select onValueChange={(e) => handleInputChange(field.onChange, e)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Roth conversion strategy" />
@@ -1037,7 +1031,7 @@ const months = [
                 <FormLabel>Goal</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onValueChange={handleInputChange(field.onChange)}
+                    onValueChange={(e) => handleInputChange(field.onChange, e)}
                     defaultValue={field.value}
                     className="flex flex-col space-y-1"
                   >
@@ -1101,4 +1095,4 @@ const months = [
         </form>
       </Form>
     );
-  }
+  });
