@@ -284,6 +284,7 @@ const months = [
                   <Tooltip>
                     <TooltipTrigger
                       type="button"
+                      aria-label="Information about Age support"
                       onClick={(e) => e.stopPropagation()} // Prevent form submission
                     ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
                       /></TooltipTrigger>
@@ -470,7 +471,7 @@ const months = [
                   <FormLabel>Cash</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                      <TooltipTrigger type="button" aria-label="Information about Cash" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">Readily available cash where a withdrawal is not subject to tax, such as your checking account balance.</TooltipContent>
@@ -552,6 +553,7 @@ const months = [
                     <Tooltip>
                         <TooltipTrigger
                           type="button"
+                          aria-label="Information about Cost Basis"
                           onClick={(e) => e.stopPropagation()} // Prevent form submission
                       ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
 /></TooltipTrigger>
@@ -593,7 +595,7 @@ const months = [
                   <FormLabel>Distributions</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                      <TooltipTrigger type="button" aria-label="Information about Distributions" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">Percentage of the account paid out annually regardless of withdrawals.</TooltipContent>
@@ -673,6 +675,7 @@ const months = [
                     <Tooltip>
                         <TooltipTrigger
                           type="button"
+                          aria-label="Information about Roth Balance"
                           onClick={(e) => e.stopPropagation()} // Prevent form submission
                       ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
 /></TooltipTrigger>
@@ -724,7 +727,7 @@ const months = [
                       {index === 0 && ( // Only add tooltip for the first field (conversion_year_minus_1)
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                            <TooltipTrigger type="button" aria-label="Information about Roth Additions" onClick={(e) => e.stopPropagation()}>
                               <Info size={16} className="text-blue-600" />
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs break-words">For each year enter the amount of additions (contributions or conversions) made to the account that have not yet been withdrawn.</TooltipContent>
@@ -769,7 +772,7 @@ const months = [
                   <FormLabel>Older Roth Additions</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                      <TooltipTrigger type="button" aria-label="Information about Older Roth Additions" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">If you are older than 59.5 and your Roth account has been open for more than 5 years, enter 1; otherwise enter the amount of older additions that have not yet been withdrawn.</TooltipContent>
@@ -840,6 +843,7 @@ const months = [
                   <Tooltip>
                     <TooltipTrigger
                       type="button"
+                      aria-label="Information about Social Security Monthly Benefit"
                       onClick={(e) => e.stopPropagation()} // Prevent form submission
                     ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
                       /></TooltipTrigger>
@@ -918,6 +922,7 @@ const months = [
               <Tooltip>
                 <TooltipTrigger
                   type="button"
+                  aria-label="Information about SLCSP Monthly"
                   onClick={(e) => e.stopPropagation()} // Prevent form submission
                 ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
                   /></TooltipTrigger>
