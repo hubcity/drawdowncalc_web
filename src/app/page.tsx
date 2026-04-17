@@ -436,7 +436,7 @@ function AppContent() {
                 if (thresholdUnderPivot < y.domain()[1] && thresholdUnderPivot > y.domain()[0]) {
                   svg.append("line")
                     .attr("x1", 0)
-                    .attr("x2", xAtPivot)
+                    .attr("x2", xAtPivot!)
                     .attr("y1", yValueUnderPivot)
                     .attr("y2", yValueUnderPivot)
                     .attr("stroke", strokeColor)
@@ -446,7 +446,7 @@ function AppContent() {
                 // Segment at or after pivot age
                 if (thresholdAtOrOverPivot < y.domain()[1] && thresholdAtOrOverPivot > y.domain()[0]) {
                   svg.append("line")
-                    .attr("x1", xAtPivot)
+                    .attr("x1", xAtPivot!)
                     .attr("x2", width)
                     .attr("y1", yValueAtOrOverPivot)
                     .attr("y2", yValueAtOrOverPivot)
