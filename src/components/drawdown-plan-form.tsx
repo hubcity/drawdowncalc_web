@@ -284,8 +284,9 @@ const months = [
                   <Tooltip>
                     <TooltipTrigger
                       type="button"
+                      aria-label="Information about Age support"
                       onClick={(e) => e.stopPropagation()} // Prevent form submission
-                    ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                    ><AlertTriangle size={16} className="text-yellow-700" // Prevent form submission
                       /></TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-xs break-words">Support for couples is in progress.  Currently individuals in couples are assumed to be the same age.</TooltipContent>
                   </Tooltip>
@@ -470,7 +471,7 @@ const months = [
                   <FormLabel>Cash</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                      <TooltipTrigger type="button" aria-label="Information about Cash" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">Readily available cash where a withdrawal is not subject to tax, such as your checking account balance.</TooltipContent>
@@ -552,8 +553,9 @@ const months = [
                     <Tooltip>
                         <TooltipTrigger
                           type="button"
+                          aria-label="Warning about Cost Basis"
                           onClick={(e) => e.stopPropagation()} // Prevent form submission
-                      ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                      ><AlertTriangle size={16} className="text-yellow-700" // Prevent form submission
 /></TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">Calculation of earnings subject to capital gains tax is an approximation.</TooltipContent>
                     </Tooltip>
@@ -593,7 +595,7 @@ const months = [
                   <FormLabel>Distributions</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                      <TooltipTrigger type="button" aria-label="Information about Distributions" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">Percentage of the account paid out annually regardless of withdrawals.</TooltipContent>
@@ -673,8 +675,9 @@ const months = [
                     <Tooltip>
                         <TooltipTrigger
                           type="button"
+                          aria-label="Warning about Roth Balance"
                           onClick={(e) => e.stopPropagation()} // Prevent form submission
-                      ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                      ><AlertTriangle size={16} className="text-yellow-700" // Prevent form submission
 /></TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">DrawdownCalc uses withdrawal rules for Roth IRAs that differ from the IRS rules.  Please fill out all of the Roth fields.</TooltipContent>
                     </Tooltip>
@@ -724,7 +727,7 @@ const months = [
                       {index === 0 && ( // Only add tooltip for the first field (conversion_year_minus_1)
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                            <TooltipTrigger type="button" aria-label="Information about Roth Additions" onClick={(e) => e.stopPropagation()}>
                               <Info size={16} className="text-blue-600" />
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs break-words">For each year enter the amount of additions (contributions or conversions) made to the account that have not yet been withdrawn.</TooltipContent>
@@ -769,7 +772,7 @@ const months = [
                   <FormLabel>Older Roth Additions</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                      <TooltipTrigger type="button" aria-label="Information about Older Roth Additions" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs break-words">If you are older than 59.5 and your Roth account has been open for more than 5 years, enter 1; otherwise enter the amount of older additions that have not yet been withdrawn.</TooltipContent>
@@ -840,8 +843,9 @@ const months = [
                   <Tooltip>
                     <TooltipTrigger
                       type="button"
+                      aria-label="Warning about Social Security Monthly Benefit"
                       onClick={(e) => e.stopPropagation()} // Prevent form submission
-                    ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                    ><AlertTriangle size={16} className="text-yellow-700" // Prevent form submission
                       /></TooltipTrigger>
                     <TooltipContent className="max-w-xs break-words">DrawdownCalc assumes that 85% of social security is taxable.</TooltipContent>
                   </Tooltip>
@@ -918,8 +922,9 @@ const months = [
               <Tooltip>
                 <TooltipTrigger
                   type="button"
+                  aria-label="Warning about SLCSP Monthly"
                   onClick={(e) => e.stopPropagation()} // Prevent form submission
-                ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                ><AlertTriangle size={16} className="text-yellow-700" // Prevent form submission
                   /></TooltipTrigger>
                   <TooltipContent className="max-w-xs break-words">Entering the SLCSP will enable a very experimental feature that calculates (and currently underestimates) ACA subsidies.  Enter 0 to disable this feature.</TooltipContent>
               </Tooltip>
