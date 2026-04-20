@@ -8,7 +8,7 @@ import {
   } from "@/services/drawdown-plan";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWatch, useFormState } from "react-hook-form";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
   
@@ -167,7 +167,7 @@ const months = [
     onFormEdit: () => void; // Add the new prop
   }
   
-  export function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
+  const DrawdownPlanFormInner = ({ onSubmit, onFormEdit }: DrawdownPlanFormProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: defaultFormValues, // Use the imported defaults
@@ -176,8 +176,8 @@ const months = [
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = 2026;
     const currentAge = useWatch({control: form.control, name: "about.age"});
-    const socialSecurityStartAges = Array.from({ length: 71 - (Number(currentAge)) }, (_, i) => Number(currentAge) + i);
-    const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
+    const socialSecurityStartAges = useMemo(() => Array.from({ length: 71 - (Number(currentAge)) }, (_, i) => Number(currentAge) + i), [currentAge]);
+    const conversionYears = useMemo(() => Array.from({ length: 4 }, (_, i) => currentYear - 1 - i), []);
     const cashInputRef = useRef<HTMLInputElement>(null); // Create a ref for the cash input
     const [hasErrors, setHasErrors] = useState(false); // To style the button
     // const [isFormEdited, setIsFormEdited] = useState(false); // Local state for form edit, managed by onFormEdit prop
@@ -1101,4 +1101,6 @@ const months = [
         </form>
       </Form>
     );
-  }
+  };
+
+  export const DrawdownPlanForm = memo(DrawdownPlanFormInner);
