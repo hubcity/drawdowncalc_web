@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'; // Import React for Fragment
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import {
   Sidebar,
@@ -612,7 +612,9 @@ function AppContent() {
     }
   }, [drawdownPlan]);
 
-  const handleSubmit = async (input: DrawdownPlanInput) => {
+  const handleFormEdit = useCallback(() => setIsFormEdited(true), []);
+
+  const handleSubmit = useCallback(async (input: DrawdownPlanInput) => {
     // console.log(input);
     setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
@@ -725,7 +727,7 @@ function AppContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
     // setShowFieldDescriptions(true); // Show field descriptions
@@ -754,7 +756,7 @@ function AppContent() {
             <SidebarContent>
             <DrawdownPlanForm
               onSubmit={handleSubmit}
-              onFormEdit={() => setIsFormEdited(true)} // Pass the callback
+              onFormEdit={handleFormEdit} // Pass the callback
             />
           </SidebarContent>
         </div>
