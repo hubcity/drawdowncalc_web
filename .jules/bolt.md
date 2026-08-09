@@ -1,0 +1,3 @@
+## 2024-05-19 - [D3 Array Processing Bottleneck]
+**Learning:** This application generates numerous stacked bar charts using D3 based on the identical subset of data array `drawdownPlan`. Generating data structures individually via multiple nested `.map()` and `.forEach()` iterations is redundant and negatively impacts responsiveness on heavily hydrated frontends when charts interactively re-render.
+**Action:** Always combine domain creation, stackable object instantiation, and summation logic into a single `for` loop iteration instead of using separate functional `.map()` closures to save CPU cycles and enhance D3 render throughput.

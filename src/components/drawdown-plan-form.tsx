@@ -8,7 +8,7 @@ import {
   } from "@/services/drawdown-plan";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWatch, useFormState } from "react-hook-form";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
   
@@ -167,7 +167,7 @@ const months = [
     onFormEdit: () => void; // Add the new prop
   }
   
-  export function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
+  export const DrawdownPlanForm = memo(function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: defaultFormValues, // Use the imported defaults
@@ -1101,4 +1101,4 @@ const months = [
         </form>
       </Form>
     );
-  }
+  });

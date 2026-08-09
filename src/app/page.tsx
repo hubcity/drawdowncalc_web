@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'; // Import React for Fragment
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import {
   Sidebar,
@@ -291,8 +291,29 @@ function AppContent() {
           .append("g")
           .attr("transform", `translate(${margin.left},${margin.top})`);
 
+        // Combine domain generation, stackable data creation, and total calculations into a single pass
+        const domains: string[] = [];
+        const stackableData: any[] = [];
+        const itemTotals: number[] = [];
+
+        for (let i = 0; i < data.length; i++) {
+          const d = data[i];
+          domains.push(d.age.toString());
+
+          let total = 0;
+          const stackObj: any = { age: d.age };
+          for (let j = 0; j < dataKeys.length; j++) {
+            const key = dataKeys[j];
+            const val = d[key as keyof DrawdownPlanYear] as number;
+            stackObj[key] = val;
+            total += val;
+          }
+          stackableData.push(stackObj);
+          itemTotals.push(total);
+        }
+
         const x = d3.scaleBand()
-          .domain(data.map(d => d.age.toString()))
+          .domain(domains)
           .range([0, width])
           .padding(0.1);
 
@@ -303,16 +324,6 @@ function AppContent() {
 
         const stack = d3.stack()
           .keys(dataKeys);
-
-        // Map DrawdownPlanYear[] to { [key: string]: number }[]
-        const stackableData = data.map(d =>
-          dataKeys.reduce<{ [key: string]: number }>((acc, key) => {
-            acc[key] = d[key as keyof DrawdownPlanYear] as number;
-            // Optionally add other fields (like age) if needed for tooltips
-            (acc as any).age = d.age;
-            return acc;
-          }, {})
-        );
 
         const stackedData = stack(stackableData);
 
@@ -347,11 +358,9 @@ function AppContent() {
           });
         
         // Add invisible rects at the top of each bar for total tooltip
-        data.forEach(d_item => {
-          let total = 0;
-          dataKeys.forEach(key => {
-            total += d_item[key as keyof DrawdownPlanYear] as number;
-          });
+        for (let i = 0; i < data.length; i++) {
+          const d_item = data[i];
+          const total = itemTotals[i];
 
           svg.append("rect")
             .attr("x", x(d_item.age.toString()) || "0")
@@ -368,7 +377,7 @@ function AppContent() {
             .on("mouseout", () => {
               tooltip.transition().duration(500).style("opacity", 0);
             });
-        });
+        }
 
         svg.append("g")
           .attr("transform", `translate(0,${chartHeight})`)
@@ -405,7 +414,7 @@ function AppContent() {
               const yValueUnderPivot = y(thresholdUnderPivot);
               const yValueAtOrOverPivot = y(thresholdAtOrOverPivot);
 
-              const xAtPivot = x(agePivot);
+              const xAtPivot = x(agePivot) || 0;
 
               // console.log(bracketStartIncome, thresholdUnderPivot, thresholdAtOrOverPivot, minPlanAge, maxPlanAge, 0, width, xAtPivot); // Debug log, if needed
 
@@ -612,7 +621,11 @@ function AppContent() {
     }
   }, [drawdownPlan]);
 
-  const handleSubmit = async (input: DrawdownPlanInput) => {
+  const handleFormEdit = useCallback(() => {
+    setIsFormEdited(true);
+  }, []);
+
+  const handleSubmit = useCallback(async (input: DrawdownPlanInput) => {
     // console.log(input);
     setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
@@ -725,7 +738,8 @@ function AppContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
     // setShowFieldDescriptions(true); // Show field descriptions
@@ -754,7 +768,7 @@ function AppContent() {
             <SidebarContent>
             <DrawdownPlanForm
               onSubmit={handleSubmit}
-              onFormEdit={() => setIsFormEdited(true)} // Pass the callback
+              onFormEdit={handleFormEdit} // Pass the stable callback
             />
           </SidebarContent>
         </div>
