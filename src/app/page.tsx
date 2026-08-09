@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'; // Import React for Fragment
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import {
   Sidebar,
@@ -130,6 +130,8 @@ function AppContent() {
   const pageRef = useRef<HTMLDivElement>(null); // This ref will target the main results container div
 
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
+
+  const handleFormEdit = useCallback(() => setIsFormEdited(true), []);
 
   useEffect(() => {
     // Scroll to the top of the results when the plan is successfully submitted and displayed
@@ -436,7 +438,7 @@ function AppContent() {
                 if (thresholdUnderPivot < y.domain()[1] && thresholdUnderPivot > y.domain()[0]) {
                   svg.append("line")
                     .attr("x1", 0)
-                    .attr("x2", xAtPivot)
+                    .attr("x2", xAtPivot!)
                     .attr("y1", yValueUnderPivot)
                     .attr("y2", yValueUnderPivot)
                     .attr("stroke", strokeColor)
@@ -446,7 +448,7 @@ function AppContent() {
                 // Segment at or after pivot age
                 if (thresholdAtOrOverPivot < y.domain()[1] && thresholdAtOrOverPivot > y.domain()[0]) {
                   svg.append("line")
-                    .attr("x1", xAtPivot)
+                    .attr("x1", xAtPivot!)
                     .attr("x2", width)
                     .attr("y1", yValueAtOrOverPivot)
                     .attr("y2", yValueAtOrOverPivot)
@@ -612,7 +614,7 @@ function AppContent() {
     }
   }, [drawdownPlan]);
 
-  const handleSubmit = async (input: DrawdownPlanInput) => {
+  const handleSubmit = useCallback(async (input: DrawdownPlanInput) => {
     // console.log(input);
     setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
@@ -725,7 +727,7 @@ function AppContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
     // setShowFieldDescriptions(true); // Show field descriptions
@@ -754,7 +756,7 @@ function AppContent() {
             <SidebarContent>
             <DrawdownPlanForm
               onSubmit={handleSubmit}
-              onFormEdit={() => setIsFormEdited(true)} // Pass the callback
+              onFormEdit={handleFormEdit} // Pass the callback
             />
           </SidebarContent>
         </div>
