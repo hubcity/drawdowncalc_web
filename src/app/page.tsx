@@ -172,7 +172,7 @@ function AppContent() {
 
       // Function to create the line chart
       const createLineChart = (
-        ref: React.RefObject<HTMLDivElement> | null,
+        ref: React.RefObject<HTMLDivElement | null> | null,
         yLabel: string,
         dataKeys: (keyof DrawdownPlanYear)[], // Keys for the lines
         lineColors: string[] // Colors for the lines
@@ -271,7 +271,7 @@ function AppContent() {
 
        // Function to create the stacked bar chart
       const createStackedBarChart = (
-        ref: React.RefObject<HTMLDivElement> | null, 
+        ref: React.RefObject<HTMLDivElement | null> | null, 
         yMax: number, 
         yLabel: string, 
         dataKeys: string[], 
@@ -818,7 +818,7 @@ function AppContent() {
           </div>
         ) : (
           // Content to display when not loading and terms accepted
-          <>
+          (<>
             {errorMessage && (
               <div className="p-4 m-4 bg-red-100 text-red-700 rounded text-center border border-red-300">
                 <strong>Error:</strong> {errorMessage}
@@ -1188,12 +1188,12 @@ function AppContent() {
              // Or potentially keep the limitations text until the form is submitted?
              // Let's keep the limitations text until submission for clarity
              // <div className="flex items-center justify-center h-full p-4 text-center">
-          <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
-            
-          </div>
+          (<div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
+
+          </div>)
           )
         )}
-        </>
+          </>)
         )}
       </SidebarInset>
     </>
