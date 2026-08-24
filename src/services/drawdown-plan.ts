@@ -226,6 +226,14 @@ export interface DrawdownPlanYear {
    */
   ACA_Help: number;
   /**
+   * The Medicare base premium amount.
+   */
+  Medicare_Base?: number;
+  /**
+   * The Medicare IRMAA surcharge amount.
+   */
+  Medicare_IRMAA?: number;
+  /**
    * The actual spending amount for the year.
    */
   Available_Spending: number;
@@ -242,6 +250,12 @@ export interface TaxBracketTuple extends Array<number> {
   2: number; // to (income)
 }
 
+export interface IrmaaBracketTuple extends Array<number> {
+  0: number; // Threshold
+  1: number; // Part_B_Surcharge
+  2: number; // Part_D_Surcharge
+}
+
 export interface FederalTaxData {
   cg_taxtable: TaxBracketTuple[];
   nii: number; // Net Investment Income tax threshold
@@ -249,6 +263,10 @@ export interface FederalTaxData {
   standard_deduction_extra65: number;
   status: string; // e.g., "Single", "MFJ"
   taxtable: TaxBracketTuple[]; // Ordinary income tax brackets
+  irmaa_brackets?: IrmaaBracketTuple[];
+  irmaa_taxtable?: IrmaaBracketTuple[];
+  irmaa?: IrmaaBracketTuple[];
+  irmaa_table?: IrmaaBracketTuple[];
 }
 
 export interface StateTaxData {
@@ -344,18 +362,34 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         Social_Security: yearData.Social_Security,
         ACA_HC_Payment: yearData.ACA_HC_Payment,
         ACA_Help: yearData.ACA_Help,
+        Medicare_Base: yearData.Medicare_Base || 0,
+        Medicare_IRMAA: yearData.Medicare_IRMAA || 0,
         Available_Spending: yearData.True_Spending,
         Excess: yearData.Excess,
       };
     })
     .sort((a, b) => a.age - b.age); // Ensure sorted by age
 
+  const irmaaData = rawData.federal?.irmaa_taxtable
+    || rawData.federal?.irmaa_brackets
+    || rawData.federal?.irmaa
+    || rawData.federal?.irmaa_table
+    || (rawData as any)?.irmaa
+    || (rawData as any)?.irmaa_taxtable
+    || (rawData as any)?.irmaa_brackets
+    || (rawData as any)?.irmaa_table;
+
+  const federalData: FederalTaxData | undefined = rawData.federal ? {
+    ...rawData.federal,
+    ...(irmaaData ? { irmaa_taxtable: irmaaData, irmaa_brackets: irmaaData, irmaa: irmaaData } : {}),
+  } : rawData.federal;
+
   return {
     planYears: formattedPlan,
     spendingFloor: rawData.spending_floor,
     endOfPlanAssets: rawData.endofplan_assets,
     status: rawData.status,
-    federal: rawData.federal,
+    federal: federalData,
     state: rawData.state,
   };
 }

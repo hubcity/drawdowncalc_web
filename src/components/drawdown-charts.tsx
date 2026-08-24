@@ -241,7 +241,7 @@ export default function DrawdownCharts({
 
         const stackableData = data.map(d =>
           dataKeys.reduce<{ [key: string]: number }>((acc, key) => {
-            acc[key] = d[key as keyof DrawdownPlanYear] as number;
+            acc[key] = (d[key as keyof DrawdownPlanYear] as number) || 0;
             (acc as any).age = d.age;
             return acc;
           }, {})
@@ -280,7 +280,7 @@ export default function DrawdownCharts({
         data.forEach(d_item => {
           let total = 0;
           dataKeys.forEach(key => {
-            total += d_item[key as keyof DrawdownPlanYear] as number;
+            total += (d_item[key as keyof DrawdownPlanYear] as number) || 0;
           });
 
           svg.append("rect")
@@ -388,6 +388,23 @@ export default function DrawdownCharts({
           if (taxBrackets.length > 0) {
             drawBracketLines(taxBrackets, "gray", "0 2 6 0");
           }
+
+          const irmaaBrackets = federalTaxData.irmaa_brackets || federalTaxData.irmaa_taxtable || federalTaxData.irmaa || federalTaxData.irmaa_table || [];
+          if (irmaaBrackets.length > 0) {
+            irmaaBrackets.forEach((bracket: any) => {
+              const threshold = Array.isArray(bracket) ? bracket[0] : (bracket.Threshold ?? bracket.threshold ?? 0);
+              if (threshold > 0 && threshold < y.domain()[1] && threshold > y.domain()[0]) {
+                svg.append("line")
+                  .attr("x1", 0)
+                  .attr("x2", width)
+                  .attr("y1", y(threshold))
+                  .attr("y2", y(threshold))
+                  .attr("stroke", "gray")
+                  .attr("stroke-dasharray", "2 4")
+                  .attr("stroke-width", 1);
+              }
+            });
+          }
         } else if (yLabel === "State AGI") {
           const taxBrackets = stateTaxData?.taxtable || [];
           const standardDeduction = stateTaxData?.standard_deduction || 0;
@@ -435,12 +452,12 @@ export default function DrawdownCharts({
       );
 
       // Spending Categories Chart
-      const spendingCategoriesYMax = d3.max(data, d => d.Fed_Tax + d.State_Tax + d.ACA_HC_Payment) || 0;
+      const spendingCategoriesYMax = d3.max(data, d => (d.Fed_Tax || 0) + (d.State_Tax || 0) + (d.ACA_HC_Payment || 0) + (d.Medicare_Base || 0) + (d.Medicare_IRMAA || 0)) || 0;
       createStackedBarChart(
         spendingChartRef,
         spendingCategoriesYMax,
         "Mandatory Spending",
-        ["Fed_Tax", "State_Tax", "ACA_HC_Payment"],
+        ["Fed_Tax", "State_Tax", "ACA_HC_Payment", "Medicare_Base", "Medicare_IRMAA"],
         COLORS_SPENDING,
         d3.formatPrefix(".1", 1e3)
       );
@@ -667,63 +684,94 @@ export default function DrawdownCharts({
           <CardDescription>A closer look at taxes.</CardDescription>
         </CardHeader>
         <CardContent>
-          {federalTaxData && (
-            <div className="mt-6 text-sm border-t pt-4">
-              <h4 className="font-semibold text-md mb-2 text-center">Federal Tax Details ({federalTaxData.status})</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                <div>
-                  <p><strong>Standard Deduction:</strong> {formatCurrency(federalTaxData.standard_deduction)}</p>
-                  <p><strong>Standard Deduction Extra (65+):</strong> {formatCurrency(federalTaxData.standard_deduction_extra65)}</p>
-                  <p><strong>Net Investment Income Tax Threshold (AGI):</strong> {formatCurrency(federalTaxData.nii)}</p>
-                </div>
-                <div></div>
+          {federalTaxData && (() => {
+            const irmaaBrackets = federalTaxData.irmaa_taxtable || federalTaxData.irmaa_brackets || federalTaxData.irmaa || federalTaxData.irmaa_table;
+            return (
+              <div className="mt-6 text-sm border-t pt-4">
+                <h4 className="font-semibold text-md mb-2 text-center">Federal Tax Details ({federalTaxData.status})</h4>
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${irmaaBrackets && irmaaBrackets.length > 0 ? 'lg:grid-cols-3' : ''} gap-x-8 gap-y-4`}>
+                  <div className={`md:col-span-2 ${irmaaBrackets && irmaaBrackets.length > 0 ? 'lg:col-span-3' : ''}`}>
+                    <p><strong>Standard Deduction:</strong> {formatCurrency(federalTaxData.standard_deduction)}</p>
+                    <p><strong>Standard Deduction Extra (65+):</strong> {formatCurrency(federalTaxData.standard_deduction_extra65)}</p>
+                    <p><strong>Net Investment Income Tax Threshold (AGI):</strong> {formatCurrency(federalTaxData.nii)}</p>
+                  </div>
 
-                <div className="md:col-span-1">
-                  <h5 className="font-medium mb-1">Ordinary Income Brackets:</h5>
-                  <Table className="text-xs">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="h-8 px-2">Rate</TableHead>
-                        <TableHead className="h-8 px-2 text-right">From</TableHead>
-                        <TableHead className="h-8 px-2 text-right">To</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {federalTaxData.taxtable.map((bracket, index) => (
-                        <TableRow key={`ord-${index}`}>
-                          <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(1)}%</TableCell>
-                          <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
-                          <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                  <div className="md:col-span-1">
+                    <h5 className="font-medium mb-1">Ordinary Income Brackets:</h5>
+                    <Table className="text-xs">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="h-8 px-2">Rate</TableHead>
+                          <TableHead className="h-8 px-2 text-right">From</TableHead>
+                          <TableHead className="h-8 px-2 text-right">To</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                      </TableHeader>
+                      <TableBody>
+                        {federalTaxData.taxtable.map((bracket, index) => (
+                          <TableRow key={`ord-${index}`}>
+                            <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(1)}%</TableCell>
+                            <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
+                            <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
 
-                <div className="md:col-span-1">
-                  <h5 className="font-medium mb-1">Capital Gains Brackets:</h5>
-                  <Table className="text-xs">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="h-8 px-2">Rate</TableHead>
-                        <TableHead className="h-8 px-2 text-right">From</TableHead>
-                        <TableHead className="h-8 px-2 text-right">To</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {federalTaxData.cg_taxtable.map((bracket, index) => (
-                        <TableRow key={`cg-${index}`}>
-                          <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(1)}%</TableCell>
-                          <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
-                          <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                  <div className="md:col-span-1">
+                    <h5 className="font-medium mb-1">Capital Gains Brackets:</h5>
+                    <Table className="text-xs">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="h-8 px-2">Rate</TableHead>
+                          <TableHead className="h-8 px-2 text-right">From</TableHead>
+                          <TableHead className="h-8 px-2 text-right">To</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {federalTaxData.cg_taxtable.map((bracket, index) => (
+                          <TableRow key={`cg-${index}`}>
+                            <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(1)}%</TableCell>
+                            <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
+                            <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {irmaaBrackets && irmaaBrackets.length > 0 && (
+                    <div className="md:col-span-1">
+                      <h5 className="font-medium mb-1">IRMAA Brackets:</h5>
+                      <Table className="text-xs">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="h-8 px-2">Threshold</TableHead>
+                            <TableHead className="h-8 px-2 text-right">Part B Surcharge</TableHead>
+                            <TableHead className="h-8 px-2 text-right">Part D Surcharge</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {irmaaBrackets.map((bracket: any, index: number) => {
+                            const threshold = Array.isArray(bracket) ? bracket[0] : (bracket.Threshold ?? bracket.threshold ?? 0);
+                            const partB = Array.isArray(bracket) ? bracket[1] : (bracket.Part_B_Surcharge ?? bracket.part_b_surcharge ?? 0);
+                            const partD = Array.isArray(bracket) ? bracket[2] : (bracket.Part_D_Surcharge ?? bracket.part_d_surcharge ?? 0);
+                            return (
+                              <TableRow key={`irmaa-${index}`}>
+                                <TableCell className="py-1 px-2">{formatCurrency(threshold)}</TableCell>
+                                <TableCell className="py-1 px-2 text-right">{formatCurrency(partB)}</TableCell>
+                                <TableCell className="py-1 px-2 text-right">{formatCurrency(partD)}</TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
           <div className="mt-8 flex justify-center" ref={incomeTypeChartRef}></div>
           {stateTaxData && (
             <div className="mt-6 text-sm border-t pt-4">
