@@ -28,8 +28,6 @@ export function FundamentalsContent() {
         <li>AMT</li>
         <li>Itemized deductions</li>
         <li>Capital losses</li>
-        <li>IRMAA</li>
-        <li>Medicare premiums</li>
         <li>ACA cost sharing subsidies (not the same thing as ACA premium subsidies)</li>
         <li>Additional income in retirement</li>
       </ul>
