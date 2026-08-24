@@ -33,6 +33,10 @@ export function ContactUsContent() {
               <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>26 November 2025</strong></td>
               <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Updated tax brackets for 2026, updated ACA subsidy percentages</td>
             </tr>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>24 August 2026</strong></td>
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Implemented Medicare & IRMAA calculations</td>
+            </tr>
             {/* You can add more rows here for future versions */}
           </tbody>
         </table>
@@ -65,18 +69,10 @@ export function ContactUsContent() {
         <b>“A prepayment of taxes”</b> is, by far, the best way to think about Roth conversions. With the Roth conversion the federal government has given us a choice of when to pay taxes on retirement savings that have not yet been taxed. We can do a Roth conversion and pay taxes at the time of the conversion, or we can wait until we withdraw the money and pay taxes then. Naturally we should want to pay taxes when we are in lower tax brackets. The question of when to do a conversion is all about deciding when we will be in those lower brackets.
       </p>
       <p className="mb-3">
-        <b>“Tax-free growth”</b> is the most misleading phrase used in regards to Roth conversions. That’s because tax-free growth <b>in isolation</b> is not a financial benefit. Let me try to explain by way of an example. Ted, the traditional IRA guy and Ron, the Roth proponent are both considering doing a Roth conversion of $10,000 this year. Ted decides not to do a conversion. When he withdraws the money in 10 years it has doubled and he owes taxes of 15%. So, taxes of 15% on the $20,000 (the original doubled) is $3,000. Ted will have $17,000 that he could spend. Ron does a conversion in the first year, he pays taxes of $1,500 and leaves the remaining $8,500 invested. Ron’s investment doubles after 10 years to $17,000. He doesn’t owe any taxes, since he prepaid them with his Roth conversion, so he has $17,000 to spend. Ron experienced 10 years of <b>tax-free growth</b>. I would argue that doesn’t matter in this case because they both ended up with the same amount of money to spend. Since the tax rate due (15%) at the time of the conversion was the same as the tax rate at the time of the withdrawal, doing a conversion and not doing a conversion were equivalent.
+        <b>“Tax-free growth”</b> is the most misleading phrase used in regards to Roth conversions. That’s because tax-free growth <b>in isolation</b> is not a financial benefit.  I would argue that what matters is how much money you have left to spend.  To get the best outcome you want to minimize the percentage of money that goes to the government, not the flat dollar amount.
       </p>
       <p className="mb-3">
         The only reason a Roth conversion makes sense is if you will be paying a lower percentage of taxes on the conversion than you would have paid if you waited until you withdrew the money.
-      </p>
-
-      <h3 className="text-base font-semibold mb-2">Useless Conversions</h3>
-      <p className="mb-3">
-        DrawdownCalc does occasionally recommend Roth conversions that seem almost useless. These tend to be conversions that in the long run may save only a few dollars, perhaps by keeping the user out of a slightly higher state tax bracket years later. DrawdownCalc sometimes makes conversions in times where not making the conversion would be equivalent. That’s because DrawdownCalc is trying to solve a math problem - when two different actions both lead to the same outcome it doesn’t know how to choose between them and may simply return the answer it found first.
-      </p>
-      <p className="mb-3">
-        I thought about trying to eliminate both of these types of useless (or almost useless) conversions. But I decided against that. The whole point of this exercise is to find out what the math tells you to do.
       </p>
 
       <h3 className="text-base font-semibold mb-2">Conventional Wisdom</h3>
